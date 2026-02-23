@@ -3,7 +3,14 @@ FROM node:20-alpine
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --omit=dev
+# Use `npm ci` when a lockfile exists for reproducible installs; otherwise
+# fall back to `npm install` so builds don't fail when the lockfile isn't
+# present in the build context (e.g. when building from a different repo root).
+RUN if [ -f package-lock.json ]; then \
+			npm ci --omit=dev; \
+		else \
+			npm install --omit=dev; \
+		fi
 
 COPY . .
 
