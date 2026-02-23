@@ -46,10 +46,10 @@ jobs:
 
           echo "IMAGE_URI=${IMAGE_URI}" >> $GITHUB_ENV
 
-          # Build using the `backend` directory as the build context and Dockerfile
-          # so the correct `package*.json` and `package-lock.json` are included
-          # when this workflow runs from a repo root that contains multiple projects.
-          docker build -t "${IMAGE_URI}" -f backend/Dockerfile backend
+          # Build from the repository root where this workflow runs (Dockerfile
+          # is in the repo root for this backend repository). Use `.` as the
+          # build context so files like `package-lock.json` are available.
+          docker build -t "${IMAGE_URI}" -f Dockerfile .
           docker push "${IMAGE_URI}"
 
       - name: Get current task definition
