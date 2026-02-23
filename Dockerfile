@@ -6,13 +6,11 @@ COPY package*.json ./
 # Use `npm ci` when a lockfile exists for reproducible installs; otherwise
 # fall back to `npm install` so builds don't fail when the lockfile isn't
 # present in the build context (e.g. when building from a different repo root).
-RUN # Try `npm ci` for reproducible installs; if it fails (lockfile mismatch),
-		# fall back to `npm install` so the image build still succeeds.
-		if [ -f package-lock.json ]; then \
-			npm ci --omit=dev || npm install --omit=dev; \
-		else \
-			npm install --omit=dev; \
-		fi
+RUN if [ -f package-lock.json ]; then \
+      npm ci --omit=dev || npm install --omit=dev; \
+    else \
+      npm install --omit=dev; \
+    fi
 
 COPY . .
 
